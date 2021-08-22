@@ -114,13 +114,40 @@ app.get('/statement/date', verifyIfExistsAccountCPF, (request, response) => {
     const dateFormat = new Date(date + " 00:00");
 
     const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString());
-    console.log(new Date(dateFormat).toDateString())
-    console.log(new Date(date).toDateString())
-    console.log(new Date(dateFormat))
-    console.log(dateFormat)
-    console.log(date)
-    console.log(statement)
+    
     return response.json(statement);
 })
+
+app.put('/account', verifyIfExistsAccountCPF, (request, response) => {
+    const { name } = request.body;
+    const { customer } = request;
+
+    customer.name = name;
+
+    return response.status(201).send("Name updated with success");
+});
+
+app.get('/account', verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+
+    return response.json(customer);
+});
+
+app.delete('/account', verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+
+    // ***Consertar Deleção***
+    customers.splice(customer, 1);
+
+    return response.status(200).json(customers);
+});
+
+app.get('/balance', verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+
+    const balance = getBalance(customer.statement);
+
+    return response.json(balance);
+});
 
 app.listen(3333, console.log('Servidor Rodando!!!'))
