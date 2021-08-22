@@ -67,7 +67,7 @@ app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request
 
     return response.json(customer.statement);
-})
+});
 
 app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
     const { description, amount } = request.body;
@@ -84,7 +84,7 @@ app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
     customer.statement.push(statementOperation);
 
     return response.status(201).json(customer);
-})
+});
 
 app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) => {
     const { amount } = request.body;
@@ -105,6 +105,22 @@ app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) => {
     customer.statement.push(statementOperation);
 
     return response.status(201).json(customer);
+});
+
+app.get('/statement/date', verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+    const { date } = request.query;
+
+    const dateFormat = new Date(date + " 00:00");
+
+    const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString());
+    console.log(new Date(dateFormat).toDateString())
+    console.log(new Date(date).toDateString())
+    console.log(new Date(dateFormat))
+    console.log(dateFormat)
+    console.log(date)
+    console.log(statement)
+    return response.json(statement);
 })
 
 app.listen(3333, console.log('Servidor Rodando!!!'))
